@@ -14,7 +14,7 @@
 </head>
 
 <body class="w3-light-grey">
-    
+
     <!-- Top Container -->
     <div class="w3-bar w3-top w3-green w3-large" style="z-index:4">
         <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
@@ -34,5 +34,62 @@
         </div>
       </nav>
       <hr>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-container w3-main" style="margin-left:300px;margin-top:43px;">
+            <div class="w3-display-middle w3-padding w3-col l6 m">
+              <div class="w3-container w3-amber">
+                <h2><i class="fa fa-calendar-check-o w3-margin-right"></i>Configure</h2>
+              </div>
+              <div class="w3-container w3-white w3-padding-16">
+                <form action="/action_page.php" target="_blank">
+                  <div class="w3-row-padding" style="margin:0 -16px;">
+                    <div class="w3-half w3-margin-bottom">
+                      <label><i class="fa fa-calendar-o"></i> From</label>
+                      <input class="w3-input w3-border" type="text" placeholder="DD-MM-YYYY HH:HH" name="From" required>
+                    </div>
+                    <div class="w3-half">
+                      <label><i class="fa fa-calendar-o"></i> Until</label>
+                      <input class="w3-input w3-border" type="text" placeholder="DD-MM-YYYY HH:HH" name="Until" required>
+                    </div>
+                  </div>
+                  <div class="w3-row-padding" style="margin:8px -16px;">
+                    <div class="w3-half w3-margin-bottom">
+                      <label><i class="fa fa-angle-double-up"></i> Top Links To Display</label>
+                      <input class="w3-input w3-border" type="number" value="10" name="Adults" min="1" max="6">
+                    </div>
+                  </div>
+                </form>
+                <style>
+                    #site-list-wrapper {
+                          margin-bottom: 2em;
+                      }
+                      #site-list-header {
+                          margin-bottom: .25em;
+                      }
+                      #site-list {
+                          height: 16em;
+                          width: 30em;
+                          padding: 5px;
+                      }
+                    </style>
+                    <form id="options-form">
+                      <div id="site-list-wrapper">
+                        <header id="site-list-header">
+                          <select id="blacklist-or-whitelist">
+                            <option data-i18n="options_blacklist_verb">Block</option>
+                            <option data-i18n="options_whitelist_verb">Whitelist</option>
+                          </select>
+                          <span data-i18n="options_site_list_header"></span>
+                        </header>
+                        <textarea id="site-list"></textarea>
+                        <p class="note" data-i18n="options_site_list_info"></p>
+                        <p class="note" data-i18n="options_site_list_syntax"></p>
+                      </div>
+              </div>
+            </div>
+</div>
 </body>
 </html>
