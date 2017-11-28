@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>KIWI</title>
+    <link rel="stylesheet" href="raport.css">
+    <link rel="stylesheet" href="node_modules/prismjs/themes/prism-coy.css">
+    <script src="node_modules/prismjs/prism.js" defer></script>
+  </head>
+
+  <body>
+    <header>
+      <p class="title">KIWI</p>
+      <p class="subtitle">Web Browser History Visualizer</p>
+    </header>
+    <article id="echipa" typeof="schema:ScholarlyArticle" resource="#">
+      <h1>Autori</h1>
+      <section>
+        <ol>
+          <li property="schema:author" typeof="sa:ContributorRole">
+            <a property="schema:author" href="https://github.com/hiezust" typeof="schema:Person">
+              <span property="schema:familyName">ROMĂNESCU</span>
+              <span property="schema:givenName"> RĂZVAN</span>
+            </a>
+          </li>
+          <li property="schema:author" typeof="sa:ContributorRole">
+            <a property="schema:author" href="https://github.com/ralucastefana" typeof="schema:Person">
+              <span property="schema:familyName">SCORŢANU</span>
+              <span property="schema:givenName">ŞTEFANA-RALUCA</span>
+            </a>
+          </li>
+          <li property="schema:author" typeof="sa:ContributorRole">
+            <a property="schema:author" href="https://github.com/hiezust" typeof="schema:Person">
+              <span property="schema:familyName">TOADER</span>
+              <span property="schema:givenName">ŞTEFANA TEODORA</span>
+            </a>
+          </li>
+        </ol>
+        <ol>
+          <li id="fii">
+            <a href="https://www.info.uaic.ro/bin/Main/" typeof="schema:Corporation">
+              <span property="schema:name">Facultatea de Informatică Iaşi</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section id="intro">
+        <h1>Introducere</h1>
+        <p>
+         KIWI este o extensie de browser Web capabilă să ofere utilizatorului maniere multiple de vizualizare a istoricului navigării şi a adreselor Web favorite (bookmark-uri) locale sau preluate din surse externe precum Pocket. Reprezentările grafice generate vor putea fi exportate în formatele PNG şi SVG. Instrumentul va putea fi configurat – de exemplu, excluderea unor domenii Internet sau URL-uri particulare de la vizualizare, stabilirea atributelor zonei în care se va produce vizualizarea, oferirea de teme cromatice etc. 
+        </p>
+      </section>
+      <section id="scop">
+        <h1>Scop</h1>
+        <p>
+          <strong>Scopul</strong> acestei extensii este de a oferi o statistică asupra istoricului navigării unei persoane, oferind într-o formă atractivă vizual aceste date, pentru a putea fi mai ușor interpretate și prelucrate.
+      </section>
+      <section typeof="sa:Abstract" id="scop">
+        <h1>Work Flow si Secțiunile Aplicației</h1>
+         <figure typeof="sa:Image">
+            <img src="overview1.png" width="880" height="655">
+            <img src="overview2.png" width="880" height="655">
+            <img src="overview.png" width="880" height="655">
+            <figcaption>
+              <p> Primul contact pe care un utilizator îl are cu aplicația, este home page-ul. Acesta reprezintă un overview al aplicației, unde utilizatorul poate vizualiza următoarele elemente:</p>
+              <ul>
+              	<li>Un dashboard fix, la care are acces constant, indiferent de locul în care se află în aplicație. De aici, poate naviga între cele 3 pagini ale plugin-ului: Overview, Graphics și Settings.
+              	<li>4 etichete: History(numărul de link-uri selectate pentru statistica), Graphics(numărul de grafice generate), Exports(numărul de exporturi efectuate), Share It(numărul de share-uri ale statisticilor). </li>
+              	<li>Un top al celor mai recente site-uri accesate.</li>
+              	<li>Un top al celor mai vizitate bookmark-uri.</li>
+              	<li>Un top ce reprezinta o distributie in procente al celor mai vizitate site-uri.</li>
+              </ul>
+            </figcaption>
+            <h2><small>Graphics</small></h2>
+          </figure>
+         <figure typeof="sa:Image">
+            <img src="graphics.png" width="880" height="655">
+            <img src="graphics_select.png" width="880" height="655">
+            <figcaption>
+              <p> În această secțiune, utilizatorul poate alege sub ce formă dorește să vizualizeze grafic statistica și are posibilitatea de a o exporta. </p>
+            </figcaption>
+            <h2><small>Settings</small></h2>
+          </figure>
+          <figure typeof="sa:Image">
+            <img src="settings.png" width="880" height="655">
+            <figcaption>
+              <p>
+                În această secțiune, utilizatorul poate configura datele pe care le dorește extrase din istoricul browser-ului. Pentru aceasta, el poate:
+              </p>
+              <ul>
+                <li>Seta intervalul din care sa fie extras istoricul.</li>
+                <li>Bloca anumite domenii pe care nu dorește să le ia în calcul în statistică.</li>
+                <li>Seta câte înregistrări din istoric să fie luate în considerare pentru a alcătui topul celor mai vizitate site-uri, respectiv topul celor mai accesate bookmark-uri.</li>
+              </ul>
+              <p> Toate aceste date pe care utilizatorul le setează/actualizează, vor fi centralizate in secțiunea Overview. 
+            </figcaption>
+          </figure>
+         
+      </section>
+
+      <section id="arhi">
+        <h1>Arhitectura aplicației </h1>
+        <p>
+          Aplicaţia este construită în JavaScript. Pentru generarea statisticilor grafice se folosesc librăriile: D3.JS, CanvasJS.
+        </p>
+         <h1>Etape de dezvoltare </h1>    
+        <p>
+          Principalele etape de dezvoltare a aplicației sunt următoarele:
+          <ul>
+          	<li></li>
+          </ul>
+        </p>
+        <ul>
+          <li>
+           </li> 
+        </ul>                
+      </section>
+      <section id="api">
+        <h1>API-uri utilizate</h1>
+        <section id="fcb">
+          <h3>Chrome APIs</h3>
+          <p>
+          	<ul>
+          		<li>chrome.storage</li>
+          		<li>chrome.history</li>
+          	</ul>
+          </p>
+        </section>   
+      </section> 
+      <section id="concluzie">
+        <h2>Concluzie</h2>
+        <p>
+           Web Browser History Visualizer este o aplicație axată pe controlul asupra site-urilor web accesate. Acest tip de plugin este util atunci cand se doreste obtinerea unui track al fluxului de accesari si poate fi un bun indicator al managementului timpului.
+        </p>
+      </section>       
+    </article>
+    <footer>
+      <p>
+        work in progres  ✕
+        <a href="https://github.com/hiezust/hivi">GitHub KIWI source</a>
+      </p>
+    </footer>
+  </body>
+</html>
