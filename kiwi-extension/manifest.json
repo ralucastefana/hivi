@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+
+    "name": "Kiwi - Web Browser History Visualizer",
+    "description": "This extension takes all the browsing history and bookmarks and presents them in various graphical forms",
+    "version": "1.1",
+
+
+    "browser_action": {
+        "default_icon": "images/kiwi.png",
+        "default_popup": "default_popup.html"
+    },
+    "permissions": [
+        "history",
+        "bookmarks",
+        "storage"
+    ],
+
+    "options_ui": {
+        "page": "html/options.html",
+        "chrome_style": true,
+        "open_in_tab": true
+    }
+}

@@ -1,0 +1,17 @@
+* {
+    font-family: Raleway, Arial, Helvetica, sans-serif;
+}
+
+#top-bar {
+    z-index: 4;
+}
+
+#leftSidebar {
+    z-index: 3;
+    width: 300px;
+}
+
+#mainContent {
+    margin-left: 300px;
+    margin-top: 43px;
+}
