@@ -69,8 +69,30 @@ function buildTodaysActivity() {
 
         var sortedActivity = todaysActivity.sort(compare);
 
-        for(i = 0, ie = sortedActivity.length; i < ie; i++) {
-            console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
+        // for(i = 0, ie = sortedActivity.length; i < ie; i++) {
+        //     console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
+        // }
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'URL');
+            data.addColumn('number', 'Hits');
+            data.addRows(10);
+
+            for(var i = 0; i < 10; i++) {
+                data.setCell(i, 0, sortedActivity[i].url);
+                data.setCell(i, 1, sortedActivity[i].hits);
+            }
+
+            var options = {
+                'title': 'Top 10 Today\'s Internet Usage'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
         }
     };
 }
