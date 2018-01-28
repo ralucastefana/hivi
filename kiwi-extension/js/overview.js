@@ -1,16 +1,3 @@
-// searchOptions = {
-//     text: '',
-//     maxResults: 30
-// };
-
-// chrome.history.search(searchOptions, function(data) {
-//     data.forEach(function(page) {
-//         if ((page.url).startsWith("http")) {
-//             console.log(page.url);
-//         }
-//     });
-// });
-
 function getBaseUrl(url) {
     var pathArray = String(url).split('/');
 
@@ -22,27 +9,38 @@ function getBaseUrl(url) {
     return url;
 }
 
-// List of unique urls for the last 24h
-uniqueUrls = [];
+function buildTodaysActivity() {
+    var inCallBack = 0;
 
-function buildTodayUrls(arrayOfUrls) {
-    searchOptions = {
-        text: ''
-    };
+    var searchOptions = {
+        'text': ''
+    }
+
+    var domains = [];
 
     chrome.history.search(searchOptions, function(historyItems) {
-        historyItems.forEach(function(item) {
-            var currentUrl = getBaseUrl(item.url);
+        inCallBack = 1;
 
-            if (arrayOfUrls.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
-                arrayOfUrls.push(currentUrl);
+        for(var i = 0, ie = historyItems.length; i < ie; i++) {
+            var currentUrl = getBaseUrl(historyItems[i].url);
+
+            if (domains.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
+                domains.push(currentUrl);
             }
-        })
 
-        uniqueUrls.forEach(function(item) {
-            console.log(item);
-        })
+            inCallBack = 0;
+        }
+
+        if(!inCallBack) {
+            onAllVisitsProcessed();
+        }
     });
+
+    var onAllVisitsProcessed = function() {
+        for(i = 0, ie = domains.length; i < ie; i++) {
+            console.log(domains[i]);
+        }
+    };
 }
 
-buildTodayUrls(uniqueUrls);
+buildTodaysActivity();

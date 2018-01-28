@@ -21,5 +21,7 @@
         "page": "html/options.html",
         "chrome_style": true,
         "open_in_tab": true
-    }
+    },
+
+    "content_security_policy": "script-src 'self' https://www.gstatic.com/charts/; object-src 'self'"
 }
