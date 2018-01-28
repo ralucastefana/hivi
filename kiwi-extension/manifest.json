@@ -8,12 +8,13 @@
 
     "browser_action": {
         "default_icon": "images/kiwi.png",
-        "default_popup": "default_popup.html"
+        "default_popup": "popup.html"
     },
     "permissions": [
         "history",
         "bookmarks",
-        "storage"
+        "storage",
+        "tabs"
     ],
 
     "options_ui": {

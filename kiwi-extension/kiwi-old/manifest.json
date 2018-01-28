@@ -7,7 +7,7 @@
 
 
     "browser_action": {
-        "default_icon": "icons/kiwi.png",
+        "default_icon": "images/kiwi.png",
         "default_popup": "default_popup.html"
     },
     "permissions": [
