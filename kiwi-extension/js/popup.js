@@ -9,6 +9,29 @@ function onAnchorClick(event) {
     return false;
 }
 
+function buildChart(data) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+    var data = google.visualization.arrayToDataTable([
+        ['Website', 'Hits'],
+        ['github.com', 28],
+        ['facebook.com', 15],
+        ['messenger.com',  7]
+    ]);
+
+        var options = {
+            title: 'My Daily Activities'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+    }
+}
+
 function buildPopupDom(divName, data) {
     var popupDiv = document.getElementById(divName);
 
