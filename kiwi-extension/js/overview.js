@@ -1,5 +1,13 @@
-chrome.history.search({text: '', maxResults: 25}, function(data) {
+
+searchOptions = {
+    text: '',
+    maxResults: 30
+};
+
+chrome.history.search(searchOptions, function(data) {
     data.forEach(function(page) {
-        console.log(page.url);
+        if ((page.url).startsWith("http")) {
+            console.log(page.url);
+        }
     });
 });
