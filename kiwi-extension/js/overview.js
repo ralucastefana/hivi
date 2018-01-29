@@ -13,7 +13,30 @@ function getBaseUrl(url) {
 }
 
 var blockedDomains = [];
-var option = 'Haha';
+var option = 'daily';
+
+function checkURL(url, domain) {
+    if(url.includes(domain)) {
+        return true;
+    }
+    return false;
+}
+
+function checkURLtoArray(url, domainArray) {
+    var ok = 1;
+
+    for(var i = 0, ie = domainArray.length; i < ie; i++) {
+        if(checkURL(url, domainArray[i])) {
+            ok = 0;
+        }
+    }
+
+    if(ok) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 function getSettingsAndFlow() {
     var inCallback = 1;
@@ -37,7 +60,7 @@ function getSettingsAndFlow() {
 getSettingsAndFlow();
 
 
-function retrieveActivity(distOption, excluded) {
+function retrieveActivity(distOption, excludedDomains) {
     var numOfRequests = 0;
 
     var currentDate = new Date();
@@ -73,8 +96,15 @@ function retrieveActivity(distOption, excluded) {
         for(var i = 0, ie = historyItems.length; i < ie; i++) {
             var currentUrl = historyItems[i].url;
 
+            var ok = 1;
+
             if (uniqueDomains.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
-                uniqueDomains.push(currentUrl);
+                // Check to see if there are matching excluded domains
+
+                if(!checkURLtoArray(currentUrl, excludedDomains)) {
+                    uniqueDomains.push(currentUrl);
+                }
+
             }
         }
 
