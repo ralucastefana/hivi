@@ -121,3 +121,18 @@ document.addEventListener('DOMContentLoaded', function() {
         saveSettings();
     });
 });
+
+var prod = {};
+
+if (!prod['86']) {
+    prod['86'] = [];
+    prod['86'] = []
+} else {
+    prod['86'].push(1);
+    prod['86'].push(2);
+}
+
+prod['86'].push(1);
+prod['86'].push(2);
+
+console.log(prod['86']);

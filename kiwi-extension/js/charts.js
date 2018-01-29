@@ -1,6 +1,3 @@
-var uniqueDomains = [];
-var todaysActivity = [];
-
 function getBaseUrl(url) {
     var pathArray = String(url).split('/');
 
@@ -12,8 +9,13 @@ function getBaseUrl(url) {
     return url;
 }
 
+var uniqueDomains = [];
+var todaysActivity = [];
+
 var blockedDomains = [];
 var option = 'daily';
+var savedProductivity = [];
+var savedWasters = [];
 
 function checkURL(url, domain) {
     if(url.includes(domain)) {
@@ -41,10 +43,12 @@ function checkURLtoArray(url, domainArray) {
 function getSettingsAndFlow() {
     var inCallback = 1;
 
-    chrome.storage.sync.get(['savedDomains', 'option'], function(items) {
+    chrome.storage.sync.get(['savedDomains', 'option', 'savedProductivity', 'savedWasters'], function(items) {
         var inCallback = 0;
         blockedDomains = items.savedDomains;
         option = items.option;
+        savedProductivity = items.savedProductivity;
+        savedWasters = items.savedWasters;
 
         if(!inCallback) {
             getSettingsAndFlowDone();
@@ -82,7 +86,7 @@ function retrieveActivity(distOption, excludedDomains) {
         maxResults = 5000;
         console.log('ALLTIME!');
     } else {
-        startTime = currentDate.getTime() - 86400000; // soon to be specific date
+        startTime = currentDate.getTime() - 86400000;
     }
     
     var searchOptions = {
@@ -119,11 +123,11 @@ function retrieveActivity(distOption, excludedDomains) {
                 for(var i = 0, ie = visitItems.length; i < ie; i++) {
                     if(visitItems[i].visitTime > startTime) {
                         hits++;
+                        allVisits.push(visitItems[i].visitTime);
                     }
 
                     if(visitItems[i].visitTime > mostRecentVisit) {
                         mostRecentVisit = visitItems[i].visitTime;
-                        allVisits.push(visitItems[i].visitTime);
                     }
                 }
 
@@ -173,14 +177,88 @@ function retrieveActivity(distOption, excludedDomains) {
 
         var sortedActivity = todaysActivity.sort(compare);
 
-        console.log(sortedActivity[0].url + " "+ sortedActivity[0].hits);
+        // console.log(sortedActivity[0].url + " "+ sortedActivity[0].hits);
 
-        for(var i = 0, ie = sortedActivity[0].allVisits.length; i < ie; i++) {
-            console.log(sortedActivity[0].allVisits[i]);
+        // for(var i = 0, ie = sortedActivity[0].allVisits.length; i < ie; i++) {
+        //     console.log(Math.round(sortedActivity[0].allVisits[i]));
+        // }
+
+        var productivityBucket = {};
+        var wastersBucket = {};
+        var prodWastersData = {};
+        var allDates = [];
+
+        for(var i = 0, ie = sortedActivity.length; i < ie; i++) {
+            var currentUrl = sortedActivity[i].url;
+
+            if(checkURLtoArray(currentUrl, savedProductivity)) {
+                
+                for(var j = 0, je = sortedActivity[i].allVisits.length; j < je; j++) {
+                    var currentVisit = Math.round(sortedActivity[i].allVisits[j]);
+                    var d = new Date(0);
+                    d.setUTCMilliseconds(currentVisit); 
+                    
+                    var currentIndex = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                    // console.log(currentIndex);
+
+                    if(!productivityBucket[currentIndex]) {
+                        productivityBucket[currentIndex] = 1;
+                    } else {
+                        productivityBucket[currentIndex]++;
+                    }
+
+                    if(allDates.indexOf(currentIndex) === -1) {
+                        allDates.push(currentIndex);
+                    }
+                }
+            } else if(checkURLtoArray(currentUrl, savedWasters)) {
+
+                for(var j = 0, je = sortedActivity[i].allVisits.length; j < je; j++) {
+                    var currentVisit = Math.round(sortedActivity[i].allVisits[j]);
+                    var d = new Date(0);
+                    d.setUTCMilliseconds(currentVisit); 
+                    
+                    var currentIndex = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                    // console.log(currentIndex);
+
+                    if(!wastersBucket[currentIndex]) {
+                        wastersBucket[currentIndex] = 1;
+                    } else {
+                        wastersBucket[currentIndex]++;
+                    }
+                }
+            }
+        }
+
+        // Object.keys(productivityBucket).forEach(function(key) {
+        //     console.log(key, productivityBucket[key]);
+        // });
+
+        // Object.keys(wastersBucket).forEach(function(key) {
+        //     console.log(key, wastersBucket[key]);
+        // });
+
+        for(var i = 0; i < allDates.length; i++) {
+            prodWastersData[allDates[i]] = [];
+            
+            if(productivityBucket[allDates[i]]) {
+                prodWastersData[allDates[i]].push(productivityBucket[allDates[i]]);
+            } else {
+                prodWastersData[allDates[i]].push(0);
+            }
+
+            if(wastersBucket[allDates[i]]) {
+                prodWastersData[allDates[i]].push(wastersBucket[allDates[i]]);
+            } else {
+                prodWastersData[allDates[i]].push(0);
+            }
+
+            // console.log(allDates[i]);
+            // console.log(prodWastersData[allDates[i]]);
         }
 
         drawPiechart(sortedActivity);
-        drawProductivityProcrastination(sortedActivity);
+        drawProductivityProcrastination(prodWastersData, allDates);
     };
 }
 
@@ -209,36 +287,23 @@ function drawPiechart(activityArray) {
     }
 }
 
-function drawProductivityProcrastination(activityArray) {
+function drawProductivityProcrastination(prodWastersData, allDates) {
     google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
+    function drawChart() {
         var data = new google.visualization.DataTable();
         
-          data.addColumn('string','Date');
-          data.addColumn('number', 'Productivity');
-          data.addColumn('number', 'Procrastination');
-          data.addRows(3);
-          
-          var currentDate = new Date();
-          
-          var firstDate = new Date(currentDate.getTime() - 79500000);
-          var secondDate = new Date(currentDate.getTime() - 67500000);
-          var thirdDate = new Date(currentDate.getTime() - 42500000);
-          
-          console.log(firstDate);
-          data.setCell(0, 0, firstDate.toString());
-          data.setCell(0, 1, 200);
-          data.setCell(0, 2, 300);
-          
-          data.setCell(1, 0, secondDate.toString());
-          data.setCell(1, 1, 748);
-          data.setCell(1, 2, 120);
-          
-          data.setCell(2, 0, thirdDate.toString());
-          data.setCell(2, 1, 500);
-          data.setCell(2, 2, 987);
+        data.addColumn('string','Date');
+        data.addColumn('number', 'Productivity');
+        data.addColumn('number', 'Procrastination');
+        data.addRows(allDates.length);
+
+        for(var i = 0; i < allDates.length; i++) {
+            data.setCell(i, 0, allDates[i]);
+            data.setCell(i, 1, prodWastersData[allDates[i]][0]);
+            data.setCell(i, 2, prodWastersData[allDates[i]][1]);
+        }
 
         var options = {
           title: 'Eternal Battle for All of Us',
@@ -248,5 +313,10 @@ function drawProductivityProcrastination(activityArray) {
 
         var chart = new google.visualization.AreaChart(document.getElementById('productivity'));
         chart.draw(data, options);
+
+        // for(var i = 0; i < allDates.length; i++) {
+        //     console.log(prodWastersData[allDates[i]][0]);
+        //     console.log(prodWastersData[allDates[i]][1]);
+        // }
       }
 }
