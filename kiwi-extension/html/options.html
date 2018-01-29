@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="../images/favicon.png">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="../js/options.js"></script>
 </head>
@@ -41,10 +42,6 @@
 
     <!-- Main Content -->
     <div class="w3-container w3-main" id="mainContent">
-        <p><h3>Block Domains:</h3>
-            <textarea value="" name="block" cols="55" rows="5" id="blockDomains"></textarea>
-        </p>
-        <hr>
         <p><h3>Overview &amp; Charts</h3>
             <div id="radioButtons">
                 <input type="radio" id="daily" name="distribution" value="daily">
@@ -59,6 +56,10 @@
                 <input type="radio" id="alltime" name="distribution" value="alltime">
                 <label for="alltime">All Time</label>
             </div>
+        </p>
+        <hr>
+        <p><h3>Block Domains:</h3>
+            <textarea value="" name="block" cols="55" rows="5" id="blockDomains"></textarea>
         </p>
         <p>
             <input type="submit" name="Save" value="Save" id="saveButton">
