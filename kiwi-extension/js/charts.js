@@ -170,42 +170,31 @@ function retrieveActivity(distOption, excludedDomains) {
 
         var sortedActivity = todaysActivity.sort(compare);
 
-        // for(i = 0, ie = sortedActivity.length; i < ie; i++) {
-        //     console.log(sortedActivity[i].url + " " + sortedActivity[i].hits + " " + sortedActivity[i].mostRecent);
-        // }
-
-        drawMainTable(sortedActivity);
+        drawPiechart(sortedActivity);
     };
 }
 
-function drawMainTable(activityArray) {
-    google.charts.load('current', {'packages':['table']});
-    google.charts.setOnLoadCallback(drawTable);
+function drawPiechart(activityArray) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
-    function drawTable() {
+    function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'URL');
         data.addColumn('number', 'Hits');
-        data.addColumn('date', 'Last Visit');
-        data.addRows(activityArray.length);
+        data.addRows(10);
 
-        for(var i = 0, ie = activityArray.length; i < ie; i++) {
-            data.setCell(i, 0, "<a href=\"" + activityArray[i].url + "\" target=\"_blank\">" + activityArray[i].url + "</a>");
+        for(var i = 0; i < 10; i++) {
+            data.setCell(i, 0, activityArray[i].url);
             data.setCell(i, 1, activityArray[i].hits);
-            data.setCell(i, 2, activityArray[i].mostRecent);
         }
-
-        var table = new google.visualization.Table(document.getElementById('overviewTable'));
 
         var options = {
-            showRowNumber: true,
-            width: '75%',
-            height: '100%',
-            alternatingRowStyle: true,
-            page: 'enable',
-            pageSize: 20,
-            allowHtml: true
-        }
-        table.draw(data, options);
+            title: 'Where do you spend most of your time?',
+            is3D: true
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3D'));
+        chart.draw(data, options);
     }
 }
