@@ -114,6 +114,7 @@ function retrieveActivity(distOption, excludedDomains) {
                 // Check to see if the visit was done after startTime
                 var hits = 0;
                 var mostRecentVisit = 0;
+                var allVisits = [];
 
                 for(var i = 0, ie = visitItems.length; i < ie; i++) {
                     if(visitItems[i].visitTime > startTime) {
@@ -122,6 +123,7 @@ function retrieveActivity(distOption, excludedDomains) {
 
                     if(visitItems[i].visitTime > mostRecentVisit) {
                         mostRecentVisit = visitItems[i].visitTime;
+                        allVisits.push(visitItems[i].visitTime);
                     }
                 }
 
@@ -133,7 +135,8 @@ function retrieveActivity(distOption, excludedDomains) {
                     var activity = {
                         'url': item,
                         'hits': hits,
-                        'mostRecent': convertedDate
+                        'mostRecent': convertedDate,
+                        'allVisits': allVisits
                     }
                     todaysActivity.push(activity);
                     hits = 0;
@@ -170,42 +173,80 @@ function retrieveActivity(distOption, excludedDomains) {
 
         var sortedActivity = todaysActivity.sort(compare);
 
-        // for(i = 0, ie = sortedActivity.length; i < ie; i++) {
-        //     console.log(sortedActivity[i].url + " " + sortedActivity[i].hits + " " + sortedActivity[i].mostRecent);
-        // }
+        console.log(sortedActivity[0].url + " "+ sortedActivity[0].hits);
 
-        drawMainTable(sortedActivity);
+        for(var i = 0, ie = sortedActivity[0].allVisits.length; i < ie; i++) {
+            console.log(sortedActivity[0].allVisits[i]);
+        }
+
+        drawPiechart(sortedActivity);
+        drawProductivityProcrastination(sortedActivity);
     };
 }
 
-function drawMainTable(activityArray) {
-    google.charts.load('current', {'packages':['table']});
-    google.charts.setOnLoadCallback(drawTable);
+function drawPiechart(activityArray) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
-    function drawTable() {
+    function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'URL');
         data.addColumn('number', 'Hits');
-        data.addColumn('date', 'Last Visit');
-        data.addRows(activityArray.length);
+        data.addRows(10);
 
-        for(var i = 0, ie = activityArray.length; i < ie; i++) {
-            data.setCell(i, 0, "<a href=\"" + activityArray[i].url + "\" target=\"_blank\">" + activityArray[i].url + "</a>");
+        for(var i = 0; i < 10; i++) {
+            data.setCell(i, 0, activityArray[i].url);
             data.setCell(i, 1, activityArray[i].hits);
-            data.setCell(i, 2, activityArray[i].mostRecent);
         }
-
-        var table = new google.visualization.Table(document.getElementById('overviewTable'));
 
         var options = {
-            showRowNumber: true,
-            width: '75%',
-            height: '100%',
-            alternatingRowStyle: true,
-            page: 'enable',
-            pageSize: 20,
-            allowHtml: true
-        }
-        table.draw(data, options);
+            title: 'Where do you spend most of your time?',
+            is3D: true
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3D'));
+        chart.draw(data, options);
     }
+}
+
+function drawProductivityProcrastination(activityArray) {
+    google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        
+          data.addColumn('string','Date');
+          data.addColumn('number', 'Productivity');
+          data.addColumn('number', 'Procrastination');
+          data.addRows(3);
+          
+          var currentDate = new Date();
+          
+          var firstDate = new Date(currentDate.getTime() - 79500000);
+          var secondDate = new Date(currentDate.getTime() - 67500000);
+          var thirdDate = new Date(currentDate.getTime() - 42500000);
+          
+          console.log(firstDate);
+          data.setCell(0, 0, firstDate.toString());
+          data.setCell(0, 1, 200);
+          data.setCell(0, 2, 300);
+          
+          data.setCell(1, 0, secondDate.toString());
+          data.setCell(1, 1, 748);
+          data.setCell(1, 2, 120);
+          
+          data.setCell(2, 0, thirdDate.toString());
+          data.setCell(2, 1, 500);
+          data.setCell(2, 2, 987);
+
+        var options = {
+          title: 'Eternal Battle for All of Us',
+          hAxis: {title: 'Date',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('productivity'));
+        chart.draw(data, options);
+      }
 }

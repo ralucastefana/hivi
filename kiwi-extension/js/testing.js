@@ -114,3 +114,46 @@ function drawChart() {
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
     chart.draw(data, options);
 }
+
+// Code for productivity chart
+function drawProductivityProcrastination(activityArray) {
+    google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        
+          data.addColumn('string','Date');
+          data.addColumn('number', 'Productivity');
+          data.addColumn('number', 'Procrastination');
+          data.addRows(3);
+          
+          var currentDate = new Date();
+          
+          var firstDate = new Date(currentDate.getTime() - 79500000);
+          var secondDate = new Date(currentDate.getTime() - 67500000);
+          var thirdDate = new Date(currentDate.getTime() - 42500000);
+          
+          console.log(firstDate);
+          data.setCell(0, 0, firstDate.toString());
+          data.setCell(0, 1, 200);
+          data.setCell(0, 2, 300);
+          
+          data.setCell(1, 0, secondDate.toString());
+          data.setCell(1, 1, 748);
+          data.setCell(1, 2, 120);
+          
+          data.setCell(2, 0, thirdDate.toString());
+          data.setCell(2, 1, 500);
+          data.setCell(2, 2, 987);
+
+        var options = {
+          title: 'Eternal Battle for All of Us',
+          hAxis: {title: 'Date',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('productivity'));
+        chart.draw(data, options);
+      }
+}
