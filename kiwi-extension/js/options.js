@@ -7,15 +7,26 @@ function checkDomain(domain) {
 
 function saveSettings() {
     var textarea = document.getElementById('blockDomains');
+    var productivityUrls = document.getElementById('productivityUrls');
+    var timeWasters = document.getElementById('timeWasters');
+
     var dailyButton = document.getElementById('daily');
     var weeklyButton = document.getElementById('weekly');
     var monthlyButton = document.getElementById('monthly');
     var alltimeButton = document.getElementById('alltime');
 
     var text = textarea.value;
+    var productivity = productivityUrls.value;
+    var wasters = timeWasters.value;
+    
     text = text.split('\n');
+    productivity = productivity.split('\n');
+    wasters = wasters.split('\n');
 
     var saved = [];
+    var savedProductivity = [];
+    var savedWasters = [];
+
     var option = "";
 
     if(dailyButton.checked) {
@@ -36,21 +47,50 @@ function saveSettings() {
         }
     }
 
-    chrome.storage.sync.set({'savedDomains': saved, 'option': option});
+    for(var i = 0; i < productivity.length; i++) {
+        if(checkDomain(productivity[i])) {
+            savedProductivity.push(productivity[i]);
+        }
+    }
+
+    for(var i = 0; i < wasters.length; i++) {
+        if(checkDomain(wasters[i])) {
+            savedWasters.push(wasters[i]);
+        }
+    }
+
+    chrome.storage.sync.set({
+        'savedDomains': saved, 
+        'option': option, 
+        'savedProductivity': savedProductivity, 
+        'savedWasters': savedWasters
+    });
 
     var saveMessage = document.getElementById('saveMessage').innerHTML = "Successfully Saved!";
         
     for(var i = 0; i < saved.length; i++) {
         console.log(saved[i]);
     }
+
+    for(var i = 0; i < savedProductivity.length; i++) {
+        console.log("prod: " + savedProductivity[i]);
+    }
+
+    for(var i = 0; i < savedWasters.length; i++) {
+        console.log("wasters: " + savedWasters[i]);
+    }
 }
 
 function getSettings() {
     var textarea = document.getElementById('blockDomains');
+    var productivityUrls = document.getElementById('productivityUrls');
+    var timeWasters = document.getElementById('timeWasters');
 
-    chrome.storage.sync.get(['savedDomains', 'option'], function(items) {
+    chrome.storage.sync.get(['savedDomains', 'option', 'savedProductivity', 'savedWasters'], function(items) {
         var saved = items.savedDomains;
         var option = items.option;
+        var savedProductivity = items.savedProductivity;
+        var savedWasters = items.savedWasters;
 
         if(option == null) {
             option = 'daily';
@@ -60,9 +100,15 @@ function getSettings() {
         }
 
         for(var i = 0; i < saved.length; i++) {
-            console.log(saved[i]);
-
             textarea.value += (saved[i] + '\n');
+        }
+
+        for(var i = 0; i < savedProductivity.length; i++) {
+            productivityUrls.value += (savedProductivity[i] + '\n');
+        }
+
+        for(var i = 0; i < savedWasters.length; i++) {
+            timeWasters.value += (savedWasters[i] + '\n');
         }
     });
 }
@@ -75,3 +121,18 @@ document.addEventListener('DOMContentLoaded', function() {
         saveSettings();
     });
 });
+
+var prod = {};
+
+if (!prod['86']) {
+    prod['86'] = [];
+    prod['86'] = []
+} else {
+    prod['86'].push(1);
+    prod['86'].push(2);
+}
+
+prod['86'].push(1);
+prod['86'].push(2);
+
+console.log(prod['86']);
