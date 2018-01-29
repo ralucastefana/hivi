@@ -52,11 +52,11 @@ function retrieveActivity(distOption, excluded) {
         console.log('WEEKLY!');
     } else if(distOption === 'monthly') {
         startTime = currentDate.getTime() - 2629743000;
-        maxResults = 5000;
+        maxResults = 1000;
         console.log('MONTHLY!');
     } else if(distOption === 'alltime') {
         startTime = 0;
-        maxResults = 7500;
+        maxResults = 1000;
         console.log('ALLTIME!');
     } else {
         startTime = currentDate.getTime() - 86400000; // soon to be specific date
@@ -71,7 +71,12 @@ function retrieveActivity(distOption, excluded) {
     chrome.history.search(searchOptions, function(historyItems) {
 
         for(var i = 0, ie = historyItems.length; i < ie; i++) {
-            //var currentUrl = getBaseUrl(historyItems[i].url);
+            // if(distOption === 'monthly' || distOption === 'alltime') {
+            //     var currentUrl = getBaseUrl(historyItems[i].url);
+            // } else {
+            //     var currentUrl = historyItems[i].url;
+            // }
+
             var currentUrl = historyItems[i].url;
 
             if (uniqueDomains.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
