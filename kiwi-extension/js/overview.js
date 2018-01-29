@@ -1,3 +1,6 @@
+var uniqueDomains = [];
+var todaysActivity = [];
+
 function getBaseUrl(url) {
     var pathArray = String(url).split('/');
 
@@ -9,20 +12,67 @@ function getBaseUrl(url) {
     return url;
 }
 
-var uniqueDomains = [];
-var todaysActivity = [];
+var blockedDomains = [];
+var option = 'Haha';
 
-function buildTodaysActivity() {
+function getSettingsAndFlow() {
+    var inCallback = 1;
+
+    chrome.storage.sync.get(['savedDomains', 'option'], function(items) {
+        var inCallback = 0;
+        blockedDomains = items.savedDomains;
+        option = items.option;
+
+        if(!inCallback) {
+            getSettingsAndFlowDone();
+        }
+    });
+
+    var getSettingsAndFlowDone = function() {
+        console.log("Here it goes!");
+        retrieveActivity(option, blockedDomains);
+    }
+}
+
+getSettingsAndFlow();
+
+
+function retrieveActivity(distOption, excluded) {
     var numOfRequests = 0;
 
+    var currentDate = new Date();
+    var startTime = 0;
+    var maxResults = 1000;
+
+    if(distOption === 'daily') {
+        startTime = currentDate.getTime() - 86400000;
+        console.log('DAILY!');
+    } else if(distOption === 'weekly') {
+        startTime = currentDate.getTime() - 604800000;
+        console.log('WEEKLY!');
+    } else if(distOption === 'monthly') {
+        startTime = currentDate.getTime() - 2629743000;
+        maxResults = 5000;
+        console.log('MONTHLY!');
+    } else if(distOption === 'alltime') {
+        startTime = 0;
+        maxResults = 7500;
+        console.log('ALLTIME!');
+    } else {
+        startTime = currentDate.getTime() - 86400000; // soon to be specific date
+    }
+    
     var searchOptions = {
-        'text': ''
+        'text': '',
+        'startTime': startTime,
+        'maxResults': maxResults
     }
 
     chrome.history.search(searchOptions, function(historyItems) {
 
         for(var i = 0, ie = historyItems.length; i < ie; i++) {
-            var currentUrl = getBaseUrl(historyItems[i].url);
+            //var currentUrl = getBaseUrl(historyItems[i].url);
+            var currentUrl = historyItems[i].url;
 
             if (uniqueDomains.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
                 uniqueDomains.push(currentUrl);
@@ -31,12 +81,23 @@ function buildTodaysActivity() {
 
         uniqueDomains.forEach(function(item) {
             chrome.history.getVisits({url: item}, function(visitItems) {
-                var activity = {
-                    'url': item,
-                    'hits': visitItems.length + 1
+
+                // Check to see if the visit was done after startTime
+                var hits = 0;
+                for(var i = 0, ie = visitItems.length; i < ie; i++) {
+                    if(visitItems[i].visitTime > startTime) {
+                        hits++;
+                    }
                 }
 
-                todaysActivity.push(activity);
+                if(hits > 0) {
+                    var activity = {
+                        'url': item,
+                        'hits': hits
+                    }
+                    todaysActivity.push(activity);
+                    hits = 0;
+                } 
 
                 numOfRequests--;
                 if(!numOfRequests) {
@@ -72,29 +133,5 @@ function buildTodaysActivity() {
         for(i = 0, ie = sortedActivity.length; i < ie; i++) {
             console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
         }
-
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'URL');
-            data.addColumn('number', 'Hits');
-            data.addRows(10);
-
-            for(var i = 0; i < 10; i++) {
-                data.setCell(i, 0, sortedActivity[i].url);
-                data.setCell(i, 1, sortedActivity[i].hits);
-            }
-
-            var options = {
-                'title': 'Top 10 Today\'s Internet Usage'
-            };
-
-            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-            chart.draw(data, options);
-        }
     };
 }
-
-buildTodaysActivity();

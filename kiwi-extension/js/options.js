@@ -24,7 +24,7 @@ function saveSettings() {
         option = 'weekly';
     } else if(monthlyButton.checked) {
         option = 'monthly';
-    } else if(monthlyButton.checked) {
+    } else if(alltimeButton.checked) {
         option = 'alltime';
     } else {
         option = 'daily';
