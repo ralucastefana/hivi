@@ -69,9 +69,9 @@ function buildTodaysActivity() {
 
         var sortedActivity = todaysActivity.sort(compare);
 
-        // for(i = 0, ie = sortedActivity.length; i < ie; i++) {
-        //     console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
-        // }
+        for(i = 0, ie = sortedActivity.length; i < ie; i++) {
+            console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
+        }
 
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(drawChart);
