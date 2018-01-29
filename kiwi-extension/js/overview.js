@@ -52,11 +52,11 @@ function retrieveActivity(distOption, excluded) {
         console.log('WEEKLY!');
     } else if(distOption === 'monthly') {
         startTime = currentDate.getTime() - 2629743000;
-        maxResults = 5000;
+        maxResults = 1000;
         console.log('MONTHLY!');
     } else if(distOption === 'alltime') {
         startTime = 0;
-        maxResults = 7500;
+        maxResults = 1000;
         console.log('ALLTIME!');
     } else {
         startTime = currentDate.getTime() - 86400000; // soon to be specific date
@@ -71,7 +71,6 @@ function retrieveActivity(distOption, excluded) {
     chrome.history.search(searchOptions, function(historyItems) {
 
         for(var i = 0, ie = historyItems.length; i < ie; i++) {
-            //var currentUrl = getBaseUrl(historyItems[i].url);
             var currentUrl = historyItems[i].url;
 
             if (uniqueDomains.indexOf(currentUrl) === -1 && currentUrl.startsWith('http')) {
@@ -84,16 +83,27 @@ function retrieveActivity(distOption, excluded) {
 
                 // Check to see if the visit was done after startTime
                 var hits = 0;
+                var mostRecentVisit = 0;
+
                 for(var i = 0, ie = visitItems.length; i < ie; i++) {
                     if(visitItems[i].visitTime > startTime) {
                         hits++;
                     }
+
+                    if(visitItems[i].visitTime > mostRecentVisit) {
+                        mostRecentVisit = visitItems[i].visitTime;
+                    }
                 }
 
                 if(hits > 0) {
+                    var utcMilliseconds = mostRecentVisit;
+                    var convertedDate = new Date(0);
+                    convertedDate.setUTCMilliseconds(utcMilliseconds);
+                    
                     var activity = {
                         'url': item,
-                        'hits': hits
+                        'hits': hits,
+                        'mostRecent': convertedDate
                     }
                     todaysActivity.push(activity);
                     hits = 0;
@@ -131,7 +141,7 @@ function retrieveActivity(distOption, excluded) {
         var sortedActivity = todaysActivity.sort(compare);
 
         for(i = 0, ie = sortedActivity.length; i < ie; i++) {
-            console.log(sortedActivity[i].url + " " + sortedActivity[i].hits);
+            console.log(sortedActivity[i].url + " " + sortedActivity[i].hits + " " + sortedActivity[i].mostRecent);
         }
     };
 }
