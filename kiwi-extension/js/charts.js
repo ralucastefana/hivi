@@ -469,11 +469,11 @@ function getImgData(chartContainer) {
     return imgData;
   }
   
-  function saveAsImg(chartContainer) {
+  function saveAsImg(chartContainer, wantedID) {
     var imgData = getImgData(chartContainer);
 
     // window.location = imgData.replace("image/png", "image/octet-stream");
-    var anchor = document.getElementById('pie_download');
+    var anchor = document.getElementById(wantedID);
     anchor.href = imgData;
     anchor.innerHTML = "Save PNG";
   }
@@ -492,9 +492,24 @@ function getImgData(chartContainer) {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    var pressButton = document.getElementById('piechart_3D_export');
+    var pressButton1 = document.getElementById('piechart_3D_export');
+    var pressButton2 = document.getElementById('productivity_export');
+    var pressButton3 = document.getElementById('mostActiveDays_export');
+    var pressButton4 = document.getElementById('mostActiveHours_export');
 
-    pressButton.addEventListener('click', function() {
-        saveAsImg(document.getElementById('piechart_3D'));
+    pressButton1.addEventListener('click', function() {
+        saveAsImg(document.getElementById('piechart_3D'), 'pie_download');
+    });
+
+    pressButton2.addEventListener('click', function() {
+        saveAsImg(document.getElementById('productivity'), 'productivity_download');
+    });
+
+    pressButton3.addEventListener('click', function() {
+        saveAsImg(document.getElementById('mostActiveDays'), 'mostActiveDays_download');
+    });
+
+    pressButton4.addEventListener('click', function() {
+        saveAsImg(document.getElementById('mostActiveHours'), 'mostActiveHours_download');
     });
 });
