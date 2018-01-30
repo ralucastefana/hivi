@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="../images/favicon.png">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="https://canvg.github.io/canvg/canvg.js"></script> 
     <script src="../js/charts.js"></script>
 </head>
 <body class="w3-light-grey">
@@ -44,10 +46,25 @@
     <div class="w3-container w3-main" id="mainContent">
         <p><h3>Overall Time Distribution</h3></p>
         <div id="piechart_3D"></div>
+        <button id="piechart_3D_export">Process PNG</button>
+        <button><a href="" id="pie_download" download="overall.png"></a></button>
         <hr>
-        
+
         <p><h3>Productivity vs. Procrastination</h3></p>
         <div id="productivity"></div>
+        <button id="productivity_export">Process PNG</button>
+        <button><a href="" id="productivity_download" download="productivity.png"></a></button>
+        <hr>
+
+        <p><h3>Most Active Days</h3></p>
+        <div id="mostActiveDays"></div>
+        <button id="mostActiveDays_export">Process PNG</button>
+        <button><a href="" id="mostActiveDays_download" download="activeDays.png"></a></button>
+
+        <p><h3>Most Active Hours</h3></p>
+        <div id="mostActiveHours"></div>
+        <button id="mostActiveHours_export">Process PNG</button>
+        <button><a href="" id="mostActiveHours_download" download="activeHours.png"></a></button>
     </div>
 </body>
 </html>

@@ -66,7 +66,7 @@ function saveSettings() {
         'savedWasters': savedWasters
     });
 
-    var saveMessage = document.getElementById('saveMessage').innerHTML = "Successfully Saved!";
+    var saveMessage = document.getElementById('saveMessage').innerHTML = "Successfully Saved! &#10003;";
         
     for(var i = 0; i < saved.length; i++) {
         console.log(saved[i]);
@@ -122,17 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-var prod = {};
+// var date = new Date();
+// var current_hours = date.getHours();
+// var current_minutes = date.getMinutes();
 
-if (!prod['86']) {
-    prod['86'] = [];
-    prod['86'] = []
-} else {
-    prod['86'].push(1);
-    prod['86'].push(2);
-}
-
-prod['86'].push(1);
-prod['86'].push(2);
-
-console.log(prod['86']);
+// console.log(current_hours.toString() + " " + current_minutes.toString());

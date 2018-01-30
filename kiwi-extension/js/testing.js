@@ -157,3 +157,83 @@ function drawProductivityProcrastination(activityArray) {
         chart.draw(data, options);
       }
 }
+
+// Code for drawing days with most activity
+    google.charts.load("current", {packages:["calendar"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+       var dataTable = new google.visualization.DataTable();
+       dataTable.addColumn({ type: 'date', id: 'Date' });
+       dataTable.addColumn({ type: 'number', id: 'Won/Loss' });
+       dataTable.addRows([
+            [ new Date(2012, 3, 13), 37032 ],
+            [ new Date(2012, 3, 14), 38024 ],
+            [ new Date(2012, 3, 15), 38024 ],
+            [ new Date(2012, 3, 16), 38108 ],
+            [ new Date(2012, 3, 17), 38229 ],
+            // Many rows omitted for brevity.
+            [ new Date(2013, 9, 4), 38177 ],
+            [ new Date(2013, 9, 5), 38705 ],
+            [ new Date(2013, 9, 12), 38210 ],
+            [ new Date(2013, 9, 13), 38029 ],
+            [ new Date(2013, 9, 19), 38823 ],
+            [ new Date(2013, 9, 23), 38345 ],
+            [ new Date(2013, 9, 24), 38436 ],
+            [ new Date(2013, 9, 30), 38447 ]
+        ]);
+
+       var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+       var options = {
+            title: "Red Sox Attendance",
+            height: 350,
+       };
+
+       chart.draw(dataTable, options);
+   }
+
+// Code for drawing most active hours
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawTrendlines);
+
+function drawTrendlines() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('timeofday', 'Time of Day');
+    data.addColumn('number', 'Motivation Level');
+
+    data.addRows([
+        [{v: [8, 0, 0], f: '8'}, .25],
+        [{v: [9, 0, 0], f: '9'}, .5],
+        [{v: [10, 0, 0], f:'10'}, 1],
+        [{v: [11, 0, 0], f: '11'}, 2.25],
+        [{v: [12, 0, 0], f: '12'}, 2.25],
+        [{v: [13, 0, 0], f: '13'}, 3],
+        [{v: [14, 0, 0], f: '14'}, 4],
+        [{v: [15, 0, 0], f: '15'}, 5.25],
+        [{v: [16, 0, 0], f: '16'}, 7.5],
+        [{v: [17, 0, 0], f: '17'}, 10],
+    ]);
+
+    var options = {
+        title: 'Motivation and Energy Level Throughout the Day',
+        trendlines: {
+          0: {type: 'linear', lineWidth: 5, opacity: .3},
+          1: {type: 'exponential', lineWidth: 10, opacity: .3}
+        },
+        hAxis: {
+          title: 'Time of Day',
+          format: 'h:mm a',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [23, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Rating (scale of 1-10)'
+        }
+      };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+}
