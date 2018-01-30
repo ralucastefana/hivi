@@ -122,10 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// var d = new Date(2012, 3, 12);
-// d.setHours(0);
-// d.setMinutes(0);
-// d.setSeconds(0);
-// d.setMilliseconds(0);
+// var date = new Date();
+// var current_hours = date.getHours();
+// var current_minutes = date.getMinutes();
 
-// console.log(d.toString());
+// console.log(current_hours.toString() + " " + current_minutes.toString());

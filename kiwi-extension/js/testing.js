@@ -192,3 +192,48 @@ function drawProductivityProcrastination(activityArray) {
 
        chart.draw(dataTable, options);
    }
+
+// Code for drawing most active hours
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawTrendlines);
+
+function drawTrendlines() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('timeofday', 'Time of Day');
+    data.addColumn('number', 'Motivation Level');
+
+    data.addRows([
+        [{v: [8, 0, 0], f: '8'}, .25],
+        [{v: [9, 0, 0], f: '9'}, .5],
+        [{v: [10, 0, 0], f:'10'}, 1],
+        [{v: [11, 0, 0], f: '11'}, 2.25],
+        [{v: [12, 0, 0], f: '12'}, 2.25],
+        [{v: [13, 0, 0], f: '13'}, 3],
+        [{v: [14, 0, 0], f: '14'}, 4],
+        [{v: [15, 0, 0], f: '15'}, 5.25],
+        [{v: [16, 0, 0], f: '16'}, 7.5],
+        [{v: [17, 0, 0], f: '17'}, 10],
+    ]);
+
+    var options = {
+        title: 'Motivation and Energy Level Throughout the Day',
+        trendlines: {
+          0: {type: 'linear', lineWidth: 5, opacity: .3},
+          1: {type: 'exponential', lineWidth: 10, opacity: .3}
+        },
+        hAxis: {
+          title: 'Time of Day',
+          format: 'h:mm a',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [23, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Rating (scale of 1-10)'
+        }
+      };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+}

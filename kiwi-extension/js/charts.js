@@ -292,7 +292,7 @@ function retrieveActivity(distOption, excludedDomains) {
                 }
             }
         }
-        
+
         // for(var i = 0; i < daysDates.length; i++) {
         //     console.log(daysDates[i] + " " + activityBucket[daysDates[i]]);
         // }
@@ -300,6 +300,7 @@ function retrieveActivity(distOption, excludedDomains) {
         drawPiechart(sortedActivity);
         drawProductivityProcrastination(prodWastersData, allDates);
         drawDaysWithMostActivity(activityBucket, daysDates);
+        drawMostActiveHours(activityBucket, daysDates);
     };
 }
 
@@ -387,3 +388,113 @@ function drawDaysWithMostActivity(activityBucket, daysDates) {
        chart.draw(data, options);
    }
 }
+
+function drawMostActiveHours(activityBucket, daysDates) {
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(drawTrendlines);
+
+    function drawTrendlines() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('timeofday', 'Time of Day');
+        data.addColumn('number', 'Hits');
+
+        data.addRows([
+            [{v: [8, 0, 0], f: '8'}, .25],
+            [{v: [9, 0, 0], f: '9'}, .5],
+            [{v: [10, 0, 0], f:'10'}, 1],
+            [{v: [11, 0, 0], f: '11'}, 2.25],
+            [{v: [12, 0, 0], f: '12'}, 2.25],
+            [{v: [13, 0, 0], f: '13'}, 3],
+            [{v: [14, 0, 0], f: '14'}, 4],
+            [{v: [15, 0, 0], f: '15'}, 5.25],
+            [{v: [16, 0, 0], f: '16'}, 7.5],
+            [{v: [17, 0, 0], f: '17'}, 10],
+        ]);
+
+        data.addRows(daysDates.length);
+
+        for(var i = 0; i < daysDates.length; i++) {
+            var currentHour = daysDates[i].getHours();
+            var currentMinutes = daysDates[i].getMinutes();
+            var activity = activityBucket[daysDates[i]];
+
+            if(currentHour >= 7 && currentHour <= 23) {
+                data.setCell(i, 0, {v: [currentHour, 0, 0], f: currentHour.toString()});
+                data.setCell(i, 1, activity % 10);
+            }
+        }
+
+        var options = {
+            title: 'Activity Level Throughout the Day',
+            trendlines: {
+                0: {type: 'linear', lineWidth: 5, opacity: .3},
+                1: {type: 'exponential', lineWidth: 10, opacity: .3}
+            },
+            hAxis: {
+                title: 'Time of Day',
+                format: 'h:mm a',
+                viewWindow: {
+                    min: [7, 30, 0],
+                    max: [23, 30, 0]
+                }
+            },
+            vAxis: {
+                title: 'Rating (scale of 1-10)'
+            }
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('mostActiveHours'));
+        chart.draw(data, options);
+    }
+}
+
+function getImgData(chartContainer) {
+    var chartArea = chartContainer.getElementsByTagName('svg')[0].parentNode;
+    var svg = chartArea.innerHTML;
+    var doc = chartContainer.ownerDocument;
+    var canvas = doc.createElement('canvas');
+    canvas.setAttribute('width', chartArea.offsetWidth);
+    canvas.setAttribute('height', chartArea.offsetHeight);
+
+
+    canvas.setAttribute(
+        'style',
+        'position: absolute; ' +
+        'top: ' + (-chartArea.offsetHeight * 2) + 'px;' +
+        'left: ' + (-chartArea.offsetWidth * 2) + 'px;');
+    doc.body.appendChild(canvas);
+    canvg(canvas, svg);
+    var imgData = canvas.toDataURL("image/png");
+    canvas.parentNode.removeChild(canvas);
+    return imgData;
+  }
+  
+  function saveAsImg(chartContainer) {
+    var imgData = getImgData(chartContainer);
+
+    // window.location = imgData.replace("image/png", "image/octet-stream");
+    var anchor = document.getElementById('pie_download');
+    anchor.href = imgData;
+    anchor.innerHTML = "Save PNG";
+  }
+  
+  function toImg(chartContainer, imgContainer) { 
+    var doc = chartContainer.ownerDocument;
+    var img = doc.createElement('img');
+    img.src = getImgData(chartContainer);
+    
+    while (imgContainer.firstChild) {
+      imgContainer.removeChild(imgContainer.firstChild);
+    }
+    imgContainer.appendChild(img);
+  }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    var pressButton = document.getElementById('piechart_3D_export');
+
+    pressButton.addEventListener('click', function() {
+        saveAsImg(document.getElementById('piechart_3D'));
+    });
+});
