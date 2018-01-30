@@ -66,7 +66,7 @@ function saveSettings() {
         'savedWasters': savedWasters
     });
 
-    var saveMessage = document.getElementById('saveMessage').innerHTML = "Successfully Saved!";
+    var saveMessage = document.getElementById('saveMessage').innerHTML = "Successfully Saved! &#10003;";
         
     for(var i = 0; i < saved.length; i++) {
         console.log(saved[i]);
