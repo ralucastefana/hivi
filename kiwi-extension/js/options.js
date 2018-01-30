@@ -122,17 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-var prod = {};
+// var d = new Date(2012, 3, 12);
+// d.setHours(0);
+// d.setMinutes(0);
+// d.setSeconds(0);
+// d.setMilliseconds(0);
 
-if (!prod['86']) {
-    prod['86'] = [];
-    prod['86'] = []
-} else {
-    prod['86'].push(1);
-    prod['86'].push(2);
-}
-
-prod['86'].push(1);
-prod['86'].push(2);
-
-console.log(prod['86']);
+// console.log(d.toString());

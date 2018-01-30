@@ -183,6 +183,8 @@ function retrieveActivity(distOption, excludedDomains) {
         //     console.log(Math.round(sortedActivity[0].allVisits[i]));
         // }
 
+
+        /* Productivity Chart Logic*/
         var productivityBucket = {};
         var wastersBucket = {};
         var prodWastersData = {};
@@ -226,6 +228,10 @@ function retrieveActivity(distOption, excludedDomains) {
                     } else {
                         wastersBucket[currentIndex]++;
                     }
+
+                    if(allDates.indexOf(currentIndex) === -1) {
+                        allDates.push(currentIndex);
+                    }
                 }
             }
         }
@@ -257,8 +263,43 @@ function retrieveActivity(distOption, excludedDomains) {
             // console.log(prodWastersData[allDates[i]]);
         }
 
+        /* Days with most activity logic! */
+        
+        var daysDates = [];
+        var activityBucket = {};
+
+        for(var i = 0, ie = sortedActivity.length; i < ie; i++) {
+            var currentUrl = sortedActivity[i].url;
+
+            for(var j = 0, je = sortedActivity[i].allVisits.length; j < je; j++) {
+                var currentVisit = Math.round(sortedActivity[i].allVisits[j]);
+                var d = new Date(0);
+                d.setUTCMilliseconds(currentVisit);
+
+                d.setHours(0);
+                d.setMinutes(0);
+                d.setSeconds(0);
+                d.setMilliseconds(0);
+
+                if(!activityBucket[d]) {
+                    activityBucket[d] = 1;
+                } else {
+                    activityBucket[d]++;
+                }
+
+                if(daysDates.indexOf(d) === -1) {
+                    daysDates.push(d);
+                }
+            }
+        }
+        
+        // for(var i = 0; i < daysDates.length; i++) {
+        //     console.log(daysDates[i] + " " + activityBucket[daysDates[i]]);
+        // }
+
         drawPiechart(sortedActivity);
         drawProductivityProcrastination(prodWastersData, allDates);
+        drawDaysWithMostActivity(activityBucket, daysDates);
     };
 }
 
@@ -308,7 +349,7 @@ function drawProductivityProcrastination(prodWastersData, allDates) {
         var options = {
           title: 'Eternal Battle for All of Us',
           hAxis: {title: 'Date',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
+          vAxis: {title: 'Hits', minValue: 0}
         };
 
         var chart = new google.visualization.AreaChart(document.getElementById('productivity'));
@@ -319,4 +360,30 @@ function drawProductivityProcrastination(prodWastersData, allDates) {
         //     console.log(prodWastersData[allDates[i]][1]);
         // }
       }
+}
+
+function drawDaysWithMostActivity(activityBucket, daysDates) {
+    google.charts.load("current", {packages:["calendar"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+       var data = new google.visualization.DataTable();
+       data.addColumn({ type: 'date', id: 'Date' });
+       data.addColumn({ type: 'number', id: 'Hits' });
+       data.addRows(daysDates.length);
+
+       for(var i = 0; i < daysDates.length; i++) {
+           data.setCell(i, 0, daysDates[i]);
+           data.setCell(i, 1, activityBucket[daysDates[i]]);
+       }
+
+       var chart = new google.visualization.Calendar(document.getElementById('mostActiveDays'));
+
+       var options = {
+            title: "Most Active Days on Interwebs",
+            height: 350,
+       };
+
+       chart.draw(data, options);
+   }
 }
